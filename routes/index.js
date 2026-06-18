@@ -8,14 +8,20 @@ const connection=mysql.createConnection({
   password: 'password',
   database: 'todo_app'
 });
-let todos=[];
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', {
-    title: 'ToDo App',
-    todos: todos,
-  });
+router.get('/', function (req, res, next) {
+  connection.query(
+    `select * from tasks;`,
+    (error, results) => {
+      console.log(error);
+      console.log(results);
+      res.render('index', {
+        title: 'ToDo App',
+        todos: results,
+      });
+    }
+  );
 });
 
 router.post('/',function(req,res,next){
