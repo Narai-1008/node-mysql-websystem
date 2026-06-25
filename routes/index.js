@@ -44,4 +44,6 @@ router.post('/', function (req, res, next) {
     });
 });
 
+router.use('/signup', require('./signin'));
+
 module.exports = router;
