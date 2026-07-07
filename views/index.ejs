@@ -14,7 +14,7 @@
   <form action="/" method="post">
     <label>タスクの追加</label>
     <input required type="text" name="add" placeholder="何をする?"/>
-    <input type="submit" value="追加"/>
+    <input class="btn btn-primary" type="submit" value="追加"/>
   </form>
   </div>
   <div class="col-md-6">
@@ -28,7 +28,7 @@
   </div>
 <% } else { %>
   <h1>Welcome to the TodoApp</h1>
-  <a href="/signup">Sign up now!</a>
+  <a class="btn btn-primary" href="/signup" role="button">Sign up now!</a>
 <% } %>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
