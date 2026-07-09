@@ -3,24 +3,13 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const cookieSession = require('cookie-session');
-
-//const indexRouter = require('./routes/index');
-//app.use("/", require("./routes"));
-//const usersRouter = require('./routes/users');
 
 const app = express();
-const secret = 'secretCuisine123';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(cookieSession({
-  name: 'session',
-  keys: [secret],
-  maxAge: 24 * 60 * 60 * 1000,
-}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -30,9 +19,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // authorization
 require("./config/passport")(app);
 
-//app.use('/', indexRouter);
-app.use("/", require("./routes"));
-//app.use('/users', usersRouter);
+// router
+app.use('/', require('./routes'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
