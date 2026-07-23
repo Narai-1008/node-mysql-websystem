@@ -10,19 +10,92 @@
 <% if(isAuth) { %>
   <div class="container">
     <div class="row">
-       <div class="col-md-6">
-  <form action="/" method="post">
-    <label>タスクの追加</label>
-    <input required type="text" name="add" placeholder="何をする?"/>
-    <input class="btn btn-primary" type="submit" value="追加"/>
-  </form>
-  </div>
-  <div class="col-md-6">
-  <ul>
-    <% for(let todo of todos){ %>
-      <li><span><%= todo.content %></span></li>
+      <div class="col-md-6">
+        <form action="/" method="post" class="mb-4">
+          <div class="form-group">
+            <label>タスクの追加</label>
+            <input required type="text" name="add" class="form-control" placeholder="何をする?" />
+          </div>
+          <div class="form-group">
+            <label>期限（任意）</label>
+            <input type="date" name="due_date" class="form-control" />
+          </div>
+          <button class="btn btn-primary" type="submit">追加</button>
+        </form>
+
+        <form action="/mood" method="post" class="mb-4">
+          <label>今日のやる気</label>
+          <div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
+            <label class="btn btn-outline-success <%= todayMood && todayMood.mood === 'happy' ? 'active' : '' %>">
+              <input type="radio" name="mood" value="happy" autocomplete="off" <%= todayMood && todayMood.mood === 'happy' ? 'checked' : '' %>> 😊
+            </label>
+            <label class="btn btn-outline-secondary <%= todayMood && todayMood.mood === 'neutral' ? 'active' : '' %>">
+              <input type="radio" name="mood" value="neutral" autocomplete="off" <%= todayMood && todayMood.mood === 'neutral' ? 'checked' : '' %>> 😐
+            </label>
+            <label class="btn btn-outline-dark <%= todayMood && todayMood.mood === 'tired' ? 'active' : '' %>">
+              <input type="radio" name="mood" value="tired" autocomplete="off" <%= todayMood && todayMood.mood === 'tired' ? 'checked' : '' %>> 😴
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm ml-2">送信</button>
+        </form>
+
+        <div class="card mb-4">
+          <div class="card-header">やる気ログ</div>
+          <ul class="list-group list-group-flush">
+            <% if (moodHistory && moodHistory.length > 0) { %>
+              <% moodHistory.forEach(function(log) { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span><%= log.formatted_date %></span>
+                  <span><%= log.mood === 'happy' ? '😊' : log.mood === 'neutral' ? '😐' : '😴' %></span>
+                </li>
+              <% }); %>
+            <% } else { %>
+              <li class="list-group-item">まだ今日のやる気を入力していません。</li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <ul class="list-group">
+          <% for(let todo of todos){ %>
+      <li class="list-group-item d-flex justify-content-between align-items-center <%= todo.completed ? 'list-group-item-success' : '' %>">
+        <div class="d-flex flex-column">
+          <span><%= todo.completed ? '✔️ ' : '' %><%= todo.content %></span>
+          <% if (todo.formatted_due_date) { %>
+            <small class="text-muted mt-1">期限: <%= todo.formatted_due_date %></small>
+          <% } %>
+          <small class="text-muted mt-1">(<%= todo.postpone_count || 0 %> 回後回し)</small>
+        </div>
+        <div class="d-flex align-items-center">
+          <form action="/complete/<%= todo.id %>" method="post" style="margin:0;">
+            <button class="btn btn-<%= todo.completed ? 'secondary' : 'success' %> btn-sm" type="submit"><%= todo.completed ? '完了解除' : '完了' %></button>
+          </form>
+          <form action="/postpone/<%= todo.id %>" method="post" style="margin:0 0 0 8px;">
+            <button class="btn btn-warning btn-sm" type="submit">後回し</button>
+          </form>
+          <form action="/delete/<%= todo.id %>" method="post" style="margin:0 0 0 8px;">
+            <button class="btn btn-danger btn-sm" type="submit">削除</button>
+          </form>
+        </div>
+      </li>
     <% } %>
   </ul>
+
+  <div class="card mt-4">
+    <div class="card-header">後回しランキング</div>
+    <ul class="list-group list-group-flush">
+      <% if (topPostponed && topPostponed.length > 0) { %>
+        <% topPostponed.forEach(function(task, index) { %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span><strong><%= index + 1 %>位:</strong> <%= task.content %></span>
+            <span class="badge badge-warning badge-pill"><%= task.postpone_count || 0 %> 回</span>
+          </li>
+        <% }); %>
+      <% } else { %>
+        <li class="list-group-item">まだ後回しされたタスクはありません。</li>
+      <% } %>
+    </ul>
+  </div>
   </div>
   </div>
   </div>
